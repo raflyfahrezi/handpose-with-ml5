@@ -1,9 +1,10 @@
 import svelte from 'rollup-plugin-svelte'
+import css from 'rollup-plugin-css-only'
+import { terser } from 'rollup-plugin-terser'
 import commonjs from '@rollup/plugin-commonjs'
+import sveltePreprocess from 'svelte-preprocess'
 import resolve from '@rollup/plugin-node-resolve'
 import livereload from 'rollup-plugin-livereload'
-import { terser } from 'rollup-plugin-terser'
-import css from 'rollup-plugin-css-only'
 
 const production = !process.env.ROLLUP_WATCH
 
@@ -60,6 +61,15 @@ export default {
             browser: true,
             dedupe: ['svelte'],
         }),
+
+        // Tailwind CSS
+        sveltePreprocess({
+            sourceMap: !production,
+            postcss: {
+                plugins: [require('tailwindcss'), require('autoprefixer')],
+            },
+        }),
+
         commonjs(),
 
         // In dev mode, call `npm run start` once
