@@ -41,12 +41,19 @@ export default {
         name: 'app',
         file: 'public/build/bundle.js',
     },
+
     plugins: [
         svelte({
             compilerOptions: {
                 // enable run-time checks when not in production
                 dev: !production,
             },
+            preprocess: sveltePreprocess({
+                sourceMap: !production,
+                postcss: {
+                    plugins: [require('tailwindcss'), require('autoprefixer')],
+                },
+            }),
         }),
         // we'll extract any component CSS out into
         // a separate file - better for performance
@@ -60,14 +67,6 @@ export default {
         resolve({
             browser: true,
             dedupe: ['svelte'],
-        }),
-
-        // Tailwind CSS
-        sveltePreprocess({
-            sourceMap: !production,
-            postcss: {
-                plugins: [require('tailwindcss'), require('autoprefixer')],
-            },
         }),
 
         commonjs(),
